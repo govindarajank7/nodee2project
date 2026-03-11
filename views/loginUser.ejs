@@ -4,16 +4,32 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login User</title>
+    <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
 </head>
 <body>
     <section>
-        <form action="/userlogin">
-            <label for="username">Username</label>
-            <input type="text" name="username" id="username">
-            <label for="password">Password</label>
-            <input type="password" name="userpassword" id="userpassword">
-            <input type="submit" value="Submit">
-        </form>
+        <div class="row">
+            <div class="col-4"></div>
+            <div class="col-4">
+                <h3>Login Form</h3>
+            </div>
+            <div class="col-4"></div>
+        </div>
+        <div class="row">
+            <div class="col-4"></div>
+            <div class="col-4">
+                <form action="/userlogin">
+                    <label for="username" class="form-label">Username</label>
+                    <input type="text" class="form-control" name="username" id="username" required>
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" class="form-control" name="userpassword" id="userpassword" required>
+                    <div class="mt-3">
+                        <input type="submit" value="Submit" class="form-control btn btn-primary">
+                    </div>
+                </form>
+            </div>
+            <div class="col-4"></div>
+        </div>
     </section>
 </body>
 </html>

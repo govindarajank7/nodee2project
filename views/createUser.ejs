@@ -4,26 +4,44 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create User</title>
+    <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
 </head>
 <body>
     <section>
-        <form action="/users" method="post">
-            <label for="username">Name</label>
-            <input type="text" name="username" id="username">
-            <label for="email">Email</label>
-            <input type="email" name="useremail" id="useremail">
-            <label for="userbirthdate">BirthDate</label>
-            <input type="date" name="userbirthdate" id="birthdate">
-            <label for="userphoto">User Photo</label>
-            <input type="file" name="userphoto" id="userphoto">
-            <label for="userrole">User Role</label>
-            <select name="userrole" id="userrole">
-                <option value="superadmin">Super Admin</option>
-                <option value="viewadmin">View Admin</option>
-                <option value="editadmin">Edit Admin</option>
-            </select>
-            <input type="submit" value="Submit">
-        </form>
+        <div class="row">
+            <div class="col"></div>
+            <div class="col">
+                <h3>User Register Form</h3>
+            </div>
+            <div class="col"></div>
+        </div>
+        <div class="row">
+            <div class="col"></div>
+            <div class="col">
+                <form action="/users" method="post" class="form-control" enctype="multipart/form-data">
+                    <label for="username" class="form-label">Name</label>
+                    <input type="text" name="username" id="username" class="form-control">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" name="useremail" id="useremail" class="form-control">
+                    <label for="userpassword">Password</label>
+                    <input type="password" name="userpassword" id="userpassword" class="form-control">
+                    <label for="userbirthdate" class="form-label">Birth Date</label>
+                    <input type="date" name="userbirthdate" id="birthdate" class="form-control">
+                    <label for="userphoto" class="form-label">User Photo</label>
+                    <input type="file" name="userphoto" id="userphoto" class="form-control">
+                    <label for="userrole" class="form-label">User Role</label>
+                    <select name="userrole" id="userrole" class="form-select">
+                        <option value="superadmin">Super Admin</option>
+                        <option selected value="viewadmin">View Admin</option>
+                        <option value="editadmin">Edit Admin</option>
+                    </select>
+                    <div class="mt-3">
+                        <input type="submit" value="Submit" class="form-control btn btn-primary">
+                    </div>
+                </form>
+            </div>
+            <div class="col"></div>
+        </div>        
     </section>
 </body>
 </html>

@@ -4,6 +4,10 @@ export function displayLoginForm(req, res) {
     res.render('loginUser');
 }
 
+export function displayRegisterForm(req, res) {
+    res.render('createUser');
+}
+
 export async function getAllUsers(req, res) {
     const usersData = await getAllUsersDB();
     if (usersData) {
