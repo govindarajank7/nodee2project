@@ -1,3 +1,4 @@
+import bcrypt from 'bcrypt';
 import { getAllUsersDB, getUserByIdDB, createUserDB, updateUserDB, deleteUserDB } from "../services/userService.mjs";
 
 export function displayLoginForm(req, res) {
@@ -32,7 +33,17 @@ export async function getUser(req, res) {
 
 export async function createUser(req, res) {
     const formData = req.body;
+    const saltRounds = 10;
+    let hashedPassword = null;
     if (formData) {
+        bcrypt.hash(password, saltRounds, function(err,hash){
+            if(err) {
+                console.log
+            } else {
+                hashedPassword = hash;
+            }
+        });
+        let password = req.body.userpassword;
         const resultID = await createUserDB(formData);
         if (resultID) { res.status(200).json({message: 'success'}); }
         else { res.status(400).json({message:'Data not inserted'});}

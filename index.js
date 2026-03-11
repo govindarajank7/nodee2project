@@ -2,7 +2,6 @@ import express from 'express';
 import { config } from 'dotenv';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-
 import userRouter from './routers/userRouter.mjs';
 import apiRouter from './routers/apiRouter.mjs';
 import { connectMongoDB } from './db.mjs';
