@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create User</title>
+</head>
+<body>
+    <section>
+        <form action="/users" method="post">
+            <label for="username">Name</label>
+            <input type="text" name="username" id="username">
+            <label for="email">Email</label>
+            <input type="email" name="useremail" id="useremail">
+            <label for="userbirthdate">BirthDate</label>
+            <input type="date" name="userbirthdate" id="birthdate">
+            <label for="userphoto">User Photo</label>
+            <input type="file" name="userphoto" id="userphoto">
+            <label for="userrole">User Role</label>
+            <select name="userrole" id="userrole">
+                <option value="superadmin">Super Admin</option>
+                <option value="viewadmin">View Admin</option>
+                <option value="editadmin">Edit Admin</option>
+            </select>
+            <input type="submit" value="Submit">
+        </form>
+    </section>
+</body>
+</html>
