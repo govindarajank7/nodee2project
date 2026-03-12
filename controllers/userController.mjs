@@ -1,5 +1,5 @@
-import bcrypt from 'bcrypt';
-import { getAllUsersDB, getUserByIdDB, createUserDB, updateUserDB, deleteUserDB } from "../services/userService.mjs";
+
+import { getAllUsersDB, getUserByIdDB, createUserDB, updateUserDB, deleteUserDB, loginUserDB } from "../services/userService.mjs";
 
 export function displayLoginForm(req, res) {
     res.render('loginUser');
@@ -19,8 +19,9 @@ export async function getAllUsers(req, res) {
 }
 
 export async function getUser(req, res) {
-    if (req.query.id) {
-            const usersData = await getUserByIdDB(req.query.id);
+    console.log(req.params.id);
+    if (req.params.id) {
+            const usersData = await getUserByIdDB(req.params.id);
         if (usersData) {
             res.status(200).json({usersData});
         } else {
@@ -32,26 +33,17 @@ export async function getUser(req, res) {
 }
 
 export async function createUser(req, res) {
-    const formData = req.body;
-    const saltRounds = 10;
-    let hashedPassword = null;
-    if (formData) {
-        bcrypt.hash(password, saltRounds, function(err,hash){
-            if(err) {
-                console.log
-            } else {
-                hashedPassword = hash;
-            }
-        });
-        let password = req.body.userpassword;
-        const resultID = await createUserDB(formData);
-        if (resultID) { res.status(200).json({message: 'success'}); }
-        else { res.status(400).json({message:'Data not inserted'});}
+    try {
+        console.log(req.body);
+        const user = await createUserDB(req.body, req.file);
+        res.status(201).json({message: 'User registered', data: user});
+    } catch(error) {
+        res.status(500).json({message: error.message});
     }
 }
 
 export async function updateUser(req, res) {
-    const userID = req.query.id;
+    const userID = req.params.id;
     const formData = req.body;
     if (formData) {
         const resultID = await updateUserDB(userID, formData);
@@ -61,10 +53,21 @@ export async function updateUser(req, res) {
 }
 
 export async function deleteUser(req, res) {
-    const userID = req.query.id;
+    const userID = req.params.id;
     if (userID) {
         const resultID = await deleteUserDB(userID);
-        if (resultID) { res.status(200).json({message: 'success'}); }
+        if (resultID) { res.status(200).json({message: 'User Deleted Successfully'}); }
         else { res.status(400).json({message:'Data not deleted'});}
+    }
+}
+
+export async function loginUser(req, res) {
+    try {
+        const {useremail, userpassword} = req.body;
+        console.log(req.body);
+        const result = await loginUserDB(useremail, userpassword);
+        res.json({message: "Login Successful", data: result});
+    } catch (error) {
+        res.status(400).json({message: error.message});
     }
 }

@@ -15,9 +15,14 @@ const __dirname = path.dirname(__filename);
 connectMongoDB();
 
 app.set('view engine','ejs');
-app.set('views',path.join(__dirname, 'views'));
+app.set('views', path.join(__dirname, 'views'));
 app.use('/bootstrap', express.static(path.join(__dirname, 'node_modules/bootstrap/dist')));
 const PORT = process.env.PORT || 6000;
+
+app.use(express.json());
+app.use(express.urlencoded({extended: true}));
+
+app.use("/uploads", express.static("uploads"));
 
 app.use('/user',userRouter);
 app.use('/api',apiRouter);

@@ -1,9 +1,11 @@
 import express from 'express';
-import { getAllUsers, getUser, createUser, updateUser, deleteUser } from '../controllers/userController.mjs';
+import {upload} from '../middlewares/uploadMiddleware.mjs';
+import { getAllUsers, getUser, createUser, updateUser, deleteUser, loginUser } from '../controllers/userController.mjs';
     const router = express.Router();
     router.get('/users', getAllUsers);
     router.get('/users/:id', getUser);
-    router.post('/users', createUser);
+    router.post('/users', upload.single('userphoto'), createUser);
     router.put('/users/:id', updateUser);
     router.delete('/users/:id', deleteUser);
+    router.post('/login', loginUser);
 export default router;
