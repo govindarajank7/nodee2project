@@ -67,6 +67,7 @@ export async function loginUser(req, res) {
         console.log(allUsersList);
         let newUsersList = null;
         req.session.user = loginResult.user;
+        req.session.token = loginResult.token;
         //res.redirect("/users");
         //res.json({message: "Login Successful", data: result});
         newUsersList = allUsersList.map((data)=>{
@@ -81,7 +82,18 @@ export async function loginUser(req, res) {
         });
         console.log('-----------------------');
         console.log(newUsersList);
-        res.render('userList',{message:"Login Successful", users: newUsersList});
+
+        // If the client expects JSON (e.g., API call), return token + user list.
+        if (req.headers.accept && req.headers.accept.includes('application/json')) {
+            return res.status(200).json({
+                message: 'Login Successful',
+                token: loginResult.token,
+                user: loginResult.user,
+                users: newUsersList,
+            });
+        }
+
+        return res.render('userList', { message: 'Login Successful', users: newUsersList });
     } catch (error) {
         //res.render('loginUser', {message:error.message});
         res.status(400).json({message: error.message});
@@ -95,4 +107,15 @@ export async function userList(req, res) {
 
     const users = await getAllUsersDB();
     res.render('userList', {users});
+}
+
+export function logoutUser(req, res) {
+    // Clear session and redirect to login
+    req.session.destroy(err => {
+        if (err) {
+            console.error('Session destroy error:', err);
+            return res.status(500).json({ message: 'Unable to logout' });
+        }
+        res.redirect('/user/login');
+    });
 }

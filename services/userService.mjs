@@ -2,6 +2,8 @@ import User from '../models/userModel.mjs';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
+const JWT_SECRET = process.env.JWT_SECRET || 'helpme';
+
 export async function createUserDB(data, file) {
     const hashedPassword = await bcrypt.hash(data.userpassword,10);
     const user = new User({
@@ -42,7 +44,7 @@ export async function loginUserDB(useremail, userpassword) {
   if (!isMatch) {
     throw new Error("Invalid Password");
   }
-  const token = jwt.sign({id: user._id, role: user.userrole},'helpme', {expiresIn:'1h'});
+  const token = jwt.sign({id: user._id, role: user.userrole}, JWT_SECRET, {expiresIn:'1h'});
 
   return {
     token,
