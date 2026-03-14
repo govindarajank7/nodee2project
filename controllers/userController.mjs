@@ -48,7 +48,9 @@ export async function createUser(req, res) {
 
 export async function createUserWeb(req, res) {
     try {
+        console.log('Registration attempt:', req.body);
         const user = await createUserDB(req.body, req.file);
+        console.log('User created:', user);
         const io = req.app.get('io');
         io.emit('userChange', { action: 'created', user });
 
@@ -63,6 +65,7 @@ export async function createUserWeb(req, res) {
 
         res.redirect('/user/users');
     } catch(error) {
+        console.error('Registration error:', error);
         res.render('createUser', { message: error.message, title: 'Register' });
     }
 }
