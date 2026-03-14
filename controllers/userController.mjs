@@ -96,8 +96,10 @@ export async function loginUser(req, res) {
 
         return res.render('userList', { message: 'Login Successful', users: newUsersList, user: req.session.user, title: 'User List' });
     } catch (error) {
-        //res.render('loginUser', {message:error.message});
-        res.status(400).json({message: error.message});
+        if (req.headers.accept && req.headers.accept.includes('application/json')) {
+            return res.status(400).json({ message: error.message });
+        }
+        return res.render('loginUser', { message: error.message, title: 'Login' });
     }
 }
 

@@ -3,8 +3,17 @@
         <div class="row">
             <h2>User List</h2>
             <% if (typeof message !== 'undefined') { %>
-                <div class="alert alert-success"><%= message %></div>
+                <div class="alert alert-success fade show"><%= message %></div>
             <% } %>
+            <script>
+                setTimeout(() => {
+                    const alerts = document.querySelectorAll('.alert');
+                    alerts.forEach(alert => {
+                        const bsAlert = new bootstrap.Alert(alert);
+                        bsAlert.close();
+                    });
+                }, 5000);
+            </script>
             <table class="table table-striped">
                 <tr>
                     <th>Profile Photo</th>
