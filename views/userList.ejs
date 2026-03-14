@@ -1,15 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User List Page</title>
-    <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
-</head>
-<body>
+<%- include('header') %>
     <main>
         <div class="row">
             <h2>User List</h2>
+            <% if (typeof message !== 'undefined') { %>
+                <div class="alert alert-success"><%= message %></div>
+            <% } %>
             <table class="table table-striped">
                 <tr>
                     <th>Profile Photo</th>
@@ -30,5 +25,4 @@
             </table>
         </div>
     </main>
-</body>
-</html>
+<% include('footer') %>

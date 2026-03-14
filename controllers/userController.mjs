@@ -2,11 +2,11 @@ import {format} from 'date-fns';
 import { getAllUsersDB, getUserByIdDB, createUserDB, updateUserDB, deleteUserDB, loginUserDB } from "../services/userService.mjs";
 
 export function displayLoginForm(req, res) {
-    res.render('loginUser');
+    res.render('loginUser', { title: 'Login' });
 }
 
 export function displayRegisterForm(req, res) {
-    res.render('createUser');
+    res.render('createUser', { title: 'Register' });
 }
 
 export async function getAllUsers(req, res) {
@@ -93,7 +93,7 @@ export async function loginUser(req, res) {
             });
         }
 
-        return res.render('userList', { message: 'Login Successful', users: newUsersList });
+        return res.render('userList', { message: 'Login Successful', users: newUsersList, user: req.session.user, title: 'User List' });
     } catch (error) {
         //res.render('loginUser', {message:error.message});
         res.status(400).json({message: error.message});
@@ -106,7 +106,7 @@ export async function userList(req, res) {
     }
 
     const users = await getAllUsersDB();
-    res.render('userList', {users});
+    res.render('userList', {users, user: req.session.user, title: 'User List'});
 }
 
 export function logoutUser(req, res) {
