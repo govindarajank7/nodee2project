@@ -1,4 +1,5 @@
 import {format} from 'date-fns';
+import bcrypt from 'bcrypt';
 import { getAllUsersDB, getUserByIdDB, createUserDB, updateUserDB, deleteUserDB, loginUserDB } from "../services/userService.mjs";
 
 export function displayLoginForm(req, res) {
@@ -129,7 +130,7 @@ export async function userList(req, res) {
             return data;
         });
     const message = req.query.message;
-    res.render('userList', {users: newUsersList, user: req.session.user, title: 'User List', message});
+    res.render('userList', {users: newUsersList, user: req.session.user, token: req.session.token, title: 'User List', message});
 }
 
 export async function displayEditUserForm(req, res) {
@@ -177,6 +178,22 @@ export async function updateUserForm(req, res) {
     const io = req.app.get('io');
     io.emit('userChange', { action: 'updated', user: updatedUser });
     res.redirect('/user/users?message=User+updated+successfully');
+}
+
+export async function deleteUserForm(req, res) {
+    const userID = req.params.id;
+    if (!userID) {
+        return res.redirect('/user/users?message=No+user+id+provided');
+    }
+
+    const deleted = await deleteUserDB(userID);
+    if (!deleted) {
+        return res.redirect('/user/users?message=Unable+to+delete+user');
+    }
+
+    const io = req.app.get('io');
+    io.emit('userChange', { action: 'deleted', userId: userID });
+    res.redirect('/user/users?message=User+deleted+successfully');
 }
 
 export function logoutUser(req, res) {

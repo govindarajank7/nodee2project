@@ -1,0 +1,50 @@
+<%- include('header') %>
+    <section>
+        <div class="row">
+            <div class="col"></div>
+            <div class="col">
+                <h3>Edit User</h3>
+            </div>
+            <div class="col"></div>
+        </div>
+        <div class="row">
+            <div class="col"></div>
+            <div class="col">
+                <form action="/user/users/<%= user._id %>" method="post" class="form-control" enctype="multipart/form-data">
+                    <label for="username" class="form-label">Name</label>
+                    <input type="text" name="username" id="username" class="form-control" value="<%= user.username %>" required>
+
+                    <label for="useremail" class="form-label">Email</label>
+                    <input type="email" name="useremail" id="useremail" class="form-control" value="<%= user.useremail %>" required>
+
+                    <label for="userpassword" class="form-label">Password</label>
+                    <input type="password" name="userpassword" id="userpassword" class="form-control" placeholder="Leave blank to keep current password">
+
+                    <label for="userbirthdate" class="form-label">Birth Date</label>
+                    <input type="datetime-local" name="userbirthdate" id="birthdate" class="form-control" value="<%= user.userbirthdate %>">
+
+                    <label for="userphoto" class="form-label">User Photo</label>
+                    <% if (user.userphoto) { %>
+                        <div class="mb-2">
+                            <img src="/uploads/<%= user.userphoto %>" alt="User photo" class="img img-responsive" style="width:100px;height:100px;" />
+                        </div>
+                    <% } %>
+                    <input type="file" name="userphoto" id="userphoto" class="form-control">
+
+                    <label for="userrole" class="form-label">User Role</label>
+                    <select name="userrole" id="userrole" class="form-select">
+                        <option value="SuperAdmin" <%= user.userrole === 'SuperAdmin' ? 'selected' : '' %>>Super Admin</option>
+                        <option value="ViewAdmin" <%= user.userrole === 'ViewAdmin' ? 'selected' : '' %>>View Admin</option>
+                        <option value="EditAdmin" <%= user.userrole === 'EditAdmin' ? 'selected' : '' %>>Edit Admin</option>
+                    </select>
+
+                    <div class="mt-3 d-flex justify-content-between">
+                        <a href="/user/users" class="btn btn-secondary">Cancel</a>
+                        <input type="submit" value="Update" class="form-control btn btn-primary">
+                    </div>
+                </form>
+            </div>
+            <div class="col"></div>
+        </div>
+    </section>
+<% include('footer') %>
