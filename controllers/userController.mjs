@@ -68,6 +68,8 @@ export async function loginUser(req, res) {
         let newUsersList = null;
         req.session.user = loginResult.user;
         req.session.token = loginResult.token;
+        console.log('Session set - user:', req.session.user);
+        console.log('Session set - token:', req.session.token);
         //res.redirect("/users");
         //res.json({message: "Login Successful", data: result});
         newUsersList = allUsersList.map((data)=>{
@@ -80,8 +82,7 @@ export async function loginUser(req, res) {
             //console.log('User birthdate___'+ data.userbirthdate);
             //console.log(data);
         });
-        console.log('-----------------------');
-        console.log(newUsersList);
+        
 
         // If the client expects JSON (e.g., API call), return token + user list.
         if (req.headers.accept && req.headers.accept.includes('application/json')) {
@@ -101,12 +102,19 @@ export async function loginUser(req, res) {
 }
 
 export async function userList(req, res) {
+    console.log('Session user:', req.session.user);
+    console.log('Session token:', req.session.token);
     if(!req.session.user) {
         return res.redirect("/user/login");
     }
 
     const users = await getAllUsersDB();
-    res.render('userList', {users, user: req.session.user, title: 'User List'});
+    newUsersList = allUsersList.map((data)=>{
+            let birthDate = new Date(data.userbirthdate);
+            data.userbirthdate = format(birthDate, "MM/dd/yyyy");
+            return data;
+        });
+    res.render('userList', {users: newUsersList, user: req.session.user, title: 'User List'});
 }
 
 export function logoutUser(req, res) {

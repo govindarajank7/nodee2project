@@ -25,9 +25,9 @@ app.use(express.urlencoded({extended: true}));
 
 app.use(session({
     secret: 'help me',
-    resave: true,
-    saveUninitialized: true,
-    cookie: { maxAge: 60000 }
+    resave: false,
+    saveUninitialized: false,
+    cookie: { maxAge: 3600000 } // 1 hour
 }));
 
 app.use("/uploads", express.static("uploads"));
