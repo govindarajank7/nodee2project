@@ -1,6 +1,9 @@
 import {format} from 'date-fns';
 import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 import { getAllUsersDB, getUserByIdDB, createUserDB, updateUserDB, deleteUserDB, loginUserDB } from "../services/userService.mjs";
+
+const JWT_SECRET = process.env.JWT_SECRET || 'helpme';
 
 export function displayLoginForm(req, res) {
     res.render('loginUser', { title: 'Login' });
