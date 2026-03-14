@@ -43,6 +43,27 @@ export async function createUser(req, res) {
     }
 }
 
+export async function createUserWeb(req, res) {
+    try {
+        const user = await createUserDB(req.body, req.file);
+        const io = req.app.get('io');
+        io.emit('userChange', { action: 'created', user });
+
+        // Auto-login after registration
+        req.session.user = {
+            id: user._id,
+            username: user.username,
+            useremail: user.useremail,
+            userrole: user.userrole
+        };
+        req.session.token = jwt.sign({id: user._id, role: user.userrole}, JWT_SECRET, {expiresIn:'1h'});
+
+        res.redirect('/user/users');
+    } catch(error) {
+        res.render('createUser', { message: error.message, title: 'Register' });
+    }
+}
+
 export async function updateUser(req, res) {
     const userID = req.params.id;
     const formData = req.body;

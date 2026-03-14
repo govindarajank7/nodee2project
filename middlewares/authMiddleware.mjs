@@ -42,3 +42,43 @@ export function requireViewAuth(req, res, next) {
     return res.redirect('/user/login');
   }
 }
+
+export function requireEditAuth(req, res, next) {
+  const token = getTokenFromRequest(req);
+
+  if (!token) {
+    return res.redirect('/user/login');
+  }
+
+  try {
+    const payload = jwt.verify(token, JWT_SECRET);
+    req.user = payload;
+    if (payload.role === 'EditAdmin' || payload.role === 'SuperAdmin') {
+      return next();
+    } else {
+      return res.status(403).send('Forbidden: insufficient permissions');
+    }
+  } catch (err) {
+    return res.redirect('/user/login');
+  }
+}
+
+export function requireSuperAuth(req, res, next) {
+  const token = getTokenFromRequest(req);
+
+  if (!token) {
+    return res.redirect('/user/login');
+  }
+
+  try {
+    const payload = jwt.verify(token, JWT_SECRET);
+    req.user = payload;
+    if (payload.role === 'SuperAdmin') {
+      return next();
+    } else {
+      return res.status(403).send('Forbidden: insufficient permissions');
+    }
+  } catch (err) {
+    return res.redirect('/user/login');
+  }
+}

@@ -8,7 +8,7 @@ router.post('/login', loginUser);
 
 router.get('/users', requireApiAuth, getAllUsers);
 router.get('/users/:id', requireApiAuth, getUser);
-router.post('/users', requireApiAuth, upload.single('userphoto'), createUser);
+router.post('/users', upload.single('userphoto'), createUser);
 router.put('/users/:id', requireApiAuth, updateUser);
 router.delete('/users/:id', requireApiAuth, deleteUser);
 
