@@ -1,5 +1,6 @@
 import express from 'express';
 import { config } from 'dotenv';
+import session from 'express-session';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import userRouter from './routers/userRouter.mjs';
@@ -21,6 +22,13 @@ const PORT = process.env.PORT || 6000;
 
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
+
+app.use(session({
+    secret: 'help me',
+    resave: true,
+    saveUninitialized: true,
+    cookie: { maxAge: 60000 }
+}));
 
 app.use("/uploads", express.static("uploads"));
 

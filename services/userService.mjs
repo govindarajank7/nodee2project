@@ -3,7 +3,6 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
 export async function createUserDB(data, file) {
-    //const { name, email, password, birthdate, photo, role} = data;
     const hashedPassword = await bcrypt.hash(data.userpassword,10);
     const user = new User({
     username: data.username,
@@ -17,7 +16,7 @@ export async function createUserDB(data, file) {
 }
 
 export async function getAllUsersDB() {
-  return await User.find();
+  return await User.find().lean();
 }
 
 export async function getUserByIdDB(id) {
@@ -37,8 +36,7 @@ export async function loginUserDB(useremail, userpassword) {
   if(!user) {
     throw new Error("User Not Found");
   }
-  console.log(userpassword);
-  console.log(user);
+
   const isMatch = await bcrypt.compare(userpassword, user.userpassword);
 
   if (!isMatch) {

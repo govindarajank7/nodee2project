@@ -8,4 +8,4 @@ import { getAllUsers, getUser, createUser, updateUser, deleteUser, loginUser } f
     router.put('/users/:id', updateUser);
     router.delete('/users/:id', deleteUser);
     router.post('/login', loginUser);
-export default router;
+    export default router;

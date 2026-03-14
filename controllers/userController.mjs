@@ -1,4 +1,4 @@
-
+import {format} from 'date-fns';
 import { getAllUsersDB, getUserByIdDB, createUserDB, updateUserDB, deleteUserDB, loginUserDB } from "../services/userService.mjs";
 
 export function displayLoginForm(req, res) {
@@ -19,7 +19,6 @@ export async function getAllUsers(req, res) {
 }
 
 export async function getUser(req, res) {
-    console.log(req.params.id);
     if (req.params.id) {
             const usersData = await getUserByIdDB(req.params.id);
         if (usersData) {
@@ -34,7 +33,6 @@ export async function getUser(req, res) {
 
 export async function createUser(req, res) {
     try {
-        console.log(req.body);
         const user = await createUserDB(req.body, req.file);
         res.status(201).json({message: 'User registered', data: user});
     } catch(error) {
@@ -64,10 +62,37 @@ export async function deleteUser(req, res) {
 export async function loginUser(req, res) {
     try {
         const {useremail, userpassword} = req.body;
-        console.log(req.body);
-        const result = await loginUserDB(useremail, userpassword);
-        res.json({message: "Login Successful", data: result});
+        const loginResult = await loginUserDB(useremail, userpassword);
+        const allUsersList = await getAllUsersDB();
+        console.log(allUsersList);
+        let newUsersList = null;
+        req.session.user = loginResult.user;
+        //res.redirect("/users");
+        //res.json({message: "Login Successful", data: result});
+        newUsersList = allUsersList.map((data)=>{
+            //console.log('Inside map:',data);
+            //console.log('data userbirthdate: '+data.userbirthdate);
+            let birthDate = new Date(data.userbirthdate);
+            //console.log('birth: '+birthDate);
+            data.userbirthdate = format(birthDate, "MM/dd/yyyy");
+            return data;
+            //console.log('User birthdate___'+ data.userbirthdate);
+            //console.log(data);
+        });
+        console.log('-----------------------');
+        console.log(newUsersList);
+        res.render('userList',{message:"Login Successful", users: newUsersList});
     } catch (error) {
+        //res.render('loginUser', {message:error.message});
         res.status(400).json({message: error.message});
     }
+}
+
+export async function userList(req, res) {
+    if(!req.session.user) {
+        return res.redirect("/user/login");
+    }
+
+    const users = await getAllUsersDB();
+    res.render('userList', {users});
 }

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User List Page</title>
+    <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
+</head>
+<body>
+    <main>
+        <div class="row">
+            <h2>User List</h2>
+            <table class="table table-striped">
+                <tr>
+                    <th>Profile Photo</th>
+                    <th>Username</th>
+                    <th>Useremail</th>
+                    <th>User Birthdate</th>
+                    <th>User Role</th>
+                </tr>
+                <% users.forEach(user => {%>
+                    <tr>
+                        <td><img src="/uploads/<%= user.userphoto%>" alt="No Image" class="img img-responsive" style="width:50px;height:50px;"></td>
+                        <td><%= user.username%></td>
+                        <td><%= user.useremail%></td>
+                        <td><%= user.userbirthdate %></td>
+                        <td><%= user.userrole%></td>
+                    </tr>
+                <% }) %>
+            </table>
+        </div>
+    </main>
+</body>
+</html>
