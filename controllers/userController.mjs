@@ -54,7 +54,6 @@ export async function createUserWeb(req, res) {
         const io = req.app.get('io');
         io.emit('userChange', { action: 'created', user });
 
-        // Auto-login after registration
         req.session.user = {
             id: user._id,
             username: user.username,
@@ -123,8 +122,6 @@ export async function loginUser(req, res) {
             //console.log(data);
         });
         
-
-        // If the client expects JSON (e.g., API call), return token + user list.
         if (req.headers.accept && req.headers.accept.includes('application/json')) {
             return res.status(200).json({
                 message: 'Login Successful',
@@ -185,11 +182,9 @@ export async function updateUserForm(req, res) {
     }
 
     if (formData.userpassword) {
-        // Only hash if password is provided
         const hashedPassword = await bcrypt.hash(formData.userpassword, 10);
         formData.userpassword = hashedPassword;
     } else {
-        // Avoid overwriting password with empty value
         delete formData.userpassword;
     }
 
@@ -224,7 +219,6 @@ export async function deleteUserForm(req, res) {
 }
 
 export function logoutUser(req, res) {
-    // Clear session and redirect to login
     req.session.destroy(err => {
         if (err) {
             console.error('Session destroy error:', err);

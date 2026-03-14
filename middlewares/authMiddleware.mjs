@@ -3,7 +3,6 @@ import jwt from 'jsonwebtoken';
 const JWT_SECRET = process.env.JWT_SECRET || 'helpme';
 
 function getTokenFromRequest(req) {
-  // Prefer Authorization header (Bearer <token>) for APIs, fall back to session-stored token
   const authHeader = req.headers?.authorization;
   if (authHeader && authHeader.startsWith('Bearer ')) {
     return authHeader.split(' ')[1];
