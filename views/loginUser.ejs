@@ -7,15 +7,6 @@
                 <% if (typeof message !== 'undefined') { %>
                     <div class="alert alert-danger fade show"><%= message %></div>
                 <% } %>
-                <script>
-                    setTimeout(() => {
-                        const alerts = document.querySelectorAll('.alert');
-                        alerts.forEach(alert => {
-                            const bsAlert = new bootstrap.Alert(alert);
-                            bsAlert.close();
-                        });
-                    }, 5000);
-                </script>
             </div>
             <div class="col-4"></div>
         </div>

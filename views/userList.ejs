@@ -5,15 +5,6 @@
             <% if (typeof message !== 'undefined') { %>
                 <div class="alert alert-success fade show"><%= message %></div>
             <% } %>
-            <script>
-                setTimeout(() => {
-                    const alerts = document.querySelectorAll('.alert');
-                    alerts.forEach(alert => {
-                        const bsAlert = new bootstrap.Alert(alert);
-                        bsAlert.close();
-                    });
-                }, 5000);
-            </script>
             <table class="table table-striped">
                 <tr>
                     <th>Profile Photo</th>
@@ -33,5 +24,35 @@
                 <% }) %>
             </table>
         </div>
+
+        <!-- Toast Container -->
+        <div class="toast-container position-fixed top-0 end-0 p-3">
+            <div id="notificationToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast-header">
+                    <strong class="me-auto">Notification</strong>
+                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+                <div class="toast-body" id="toastMessage"></div>
+            </div>
+        </div>
     </main>
 <% include('footer') %>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    const socket = io();
+    const toastEl = document.getElementById('notificationToast');
+    const toast = new bootstrap.Toast(toastEl);
+
+    socket.on('userChange', (data) => {
+        let message = '';
+        if (data.action === 'created') {
+            message = `New user ${data.user.username} created.`;
+        } else if (data.action === 'updated') {
+            message = `User ${data.user.username} updated.`;
+        } else if (data.action === 'deleted') {
+            message = `User with ID ${data.userId} deleted.`;
+        }
+        document.getElementById('toastMessage').textContent = message;
+        toast.show();
+    });
+</script>

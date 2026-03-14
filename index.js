@@ -3,11 +3,15 @@ import { config } from 'dotenv';
 import session from 'express-session';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { createServer } from 'http';
+import { Server } from 'socket.io';
 import userRouter from './routers/userRouter.mjs';
 import apiRouter from './routers/apiRouter.mjs';
 import { connectMongoDB } from './db.mjs';
 
 const app = express();
+const server = createServer(app);
+const io = new Server(server);
 config();
 
 const __filename = fileURLToPath(import.meta.url);
@@ -35,6 +39,9 @@ app.use("/uploads", express.static("uploads"));
 app.use('/user',userRouter);
 app.use('/api',apiRouter);
 app.use('/',userRouter);
-app.listen(PORT,()=>{
+
+app.set('io', io);
+
+server.listen(PORT,()=>{
     console.log(`App Started at ${PORT}`);
 });

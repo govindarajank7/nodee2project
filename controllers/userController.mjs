@@ -34,6 +34,8 @@ export async function getUser(req, res) {
 export async function createUser(req, res) {
     try {
         const user = await createUserDB(req.body, req.file);
+        const io = req.app.get('io');
+        io.emit('userChange', { action: 'created', user });
         res.status(201).json({message: 'User registered', data: user});
     } catch(error) {
         res.status(500).json({message: error.message});
@@ -45,8 +47,13 @@ export async function updateUser(req, res) {
     const formData = req.body;
     if (formData) {
         const resultID = await updateUserDB(userID, formData);
-        if (resultID) { res.status(200).json({message: 'success'}); }
-        else { res.status(400).json({message:'Data not updated'});}
+        if (resultID) {
+            const io = req.app.get('io');
+            io.emit('userChange', { action: 'updated', user: resultID });
+            res.status(200).json({message: 'success'});
+        } else {
+            res.status(400).json({message:'Data not updated'});
+        }
     }
 }
 
@@ -54,8 +61,13 @@ export async function deleteUser(req, res) {
     const userID = req.params.id;
     if (userID) {
         const resultID = await deleteUserDB(userID);
-        if (resultID) { res.status(200).json({message: 'User Deleted Successfully'}); }
-        else { res.status(400).json({message:'Data not deleted'});}
+        if (resultID) {
+            const io = req.app.get('io');
+            io.emit('userChange', { action: 'deleted', userId: userID });
+            res.status(200).json({message: 'User Deleted Successfully'});
+        } else {
+            res.status(400).json({message:'Data not deleted'});
+        }
     }
 }
 
@@ -111,12 +123,60 @@ export async function userList(req, res) {
     }
 
     const users = await getAllUsersDB();
-    newUsersList = allUsersList.map((data)=>{
+    const newUsersList = users.map((data)=>{
             let birthDate = new Date(data.userbirthdate);
             data.userbirthdate = format(birthDate, "MM/dd/yyyy");
             return data;
         });
-    res.render('userList', {users: newUsersList, user: req.session.user, title: 'User List'});
+    const message = req.query.message;
+    res.render('userList', {users: newUsersList, user: req.session.user, title: 'User List', message});
+}
+
+export async function displayEditUserForm(req, res) {
+    const userId = req.params.id;
+    if (!userId) {
+        return res.redirect('/user/users?message=No+user+id+provided');
+    }
+
+    const user = await getUserByIdDB(userId);
+    if (!user) {
+        return res.redirect('/user/users?message=User+not+found');
+    }
+
+    const birthDate = user.userbirthdate ? format(new Date(user.userbirthdate), "yyyy-MM-dd'T'HH:mm") : '';
+
+    res.render('editUser', { title: 'Edit User', user: { ...user.toObject(), userbirthdate: birthDate } });
+}
+
+export async function updateUserForm(req, res) {
+    const userID = req.params.id;
+    const formData = { ...req.body };
+
+    if (!userID) {
+        return res.redirect('/user/users?message=No+user+id+provided');
+    }
+
+    if (formData.userpassword) {
+        // Only hash if password is provided
+        const hashedPassword = await bcrypt.hash(formData.userpassword, 10);
+        formData.userpassword = hashedPassword;
+    } else {
+        // Avoid overwriting password with empty value
+        delete formData.userpassword;
+    }
+
+    if (req.file) {
+        formData.userphoto = req.file.filename;
+    }
+
+    const updatedUser = await updateUserDB(userID, formData);
+    if (!updatedUser) {
+        return res.redirect('/user/users?message=Unable+to+update+user');
+    }
+
+    const io = req.app.get('io');
+    io.emit('userChange', { action: 'updated', user: updatedUser });
+    res.redirect('/user/users?message=User+updated+successfully');
 }
 
 export function logoutUser(req, res) {
